@@ -1,6 +1,11 @@
 #ifndef GAME_H_INCLUDED
 #define GAME_H_INCLUDED
 
+#define NUM_TILES 10
+
+#define WINDOW_HEIGHT 200
+#define WINDOW_WIDTH 200
+
 #include <SDL2/SDL.h>
 
 class Game{
@@ -12,6 +17,7 @@ private:
   void draw();
   void input(SDL_Event event);
   void loop();
+  int getClickedTile(int x, int y);
   double dtime;
   int last;
   int now;
