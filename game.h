@@ -8,6 +8,8 @@
 
 #include <SDL2/SDL.h>
 
+#include "tile.h"
+
 #include <vector>
 
 class Game{
@@ -21,11 +23,15 @@ private:
   void loop();
   void tileOpen(int x, int y);
   void generateMines();
+  void generateTiles();
   int getClickedTile(int x, int y);
   double dtime;
   int last;
   int now;
   bool running;
+
+  std::vector<Tile> tiles;
+
   std::vector<SDL_Rect> clickedTiles;
   std::vector<int> mines;
   SDL_Renderer* renderer;

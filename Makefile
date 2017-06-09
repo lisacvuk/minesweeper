@@ -1,2 +1,3 @@
 all:
-	g++ main.cpp game.cpp -o game.x86 -lSDL2
+	g++ -c *.cpp
+	g++ *.o -o game.x86 -lSDL2 -lSDL2_ttf

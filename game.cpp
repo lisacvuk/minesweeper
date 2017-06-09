@@ -1,4 +1,5 @@
 #include "game.h"
+#include "tile.h"
 #include <SDL2/SDL.h>
 #include <stdlib.h>
 #include <time.h>
@@ -13,9 +14,18 @@ void Game::init(){
   SDL_Init(SDL_INIT_EVERYTHING);
   now = SDL_GetTicks();
   SDL_CreateWindowAndRenderer(WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN, &window, &renderer);
+  generateTiles();
   generateMines();
   while(running){
     loop();
+  }
+}
+void Game::generateTiles(){
+  for(int i = 0; i < 10; i++){
+    for(int k = 0; k < 10; k++){
+      Tile temp(getClickedTile(i*20, k*20), i*20, k*20, renderer);
+      tiles.push_back(temp);
+    }
   }
 }
 void Game::generateMines(){
@@ -28,6 +38,9 @@ void Game::generateMines(){
       }
     }
     mines.push_back(temp);
+  }
+  for(int i = 0; i < mines.size(); i++){
+    tiles[mines[i]].makeItSoNumberOne();
   }
 }
 void Game::input(SDL_Event event){
@@ -59,7 +72,7 @@ void Game::draw(){
   SDL_RenderClear(renderer);
 
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-  for(int i = 0; i < NUM_TILES; i++){
+/*  for(int i = 0; i < NUM_TILES; i++){
     SDL_RenderDrawLine(renderer, 0, 20*i, WINDOW_HEIGHT, 20*i);
     SDL_RenderDrawLine(renderer, 20*i, 0, 20*i, WINDOW_WIDTH);
   }
@@ -67,7 +80,19 @@ void Game::draw(){
   for(int i = 0; i < clickedTiles.size(); i++){
     SDL_RenderFillRect(renderer, &clickedTiles[i]);
   }
-
+*/
+  for(int i = 0; i < tiles.size(); i++){
+    if(tiles[i].isMine() == 1){
+      SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+    }
+    else{
+      SDL_SetRenderDrawColor(renderer, 125, 125, 125, 255);
+    }
+    SDL_Rect temp = tiles[i].getRect();
+    SDL_RenderFillRect(renderer, &temp);
+    SDL_SetRenderDrawColor(renderer, 0, 255,0, 255);
+    SDL_RenderCopy(renderer, tiles[i].getTexture(), NULL, &temp);
+  }
   SDL_RenderPresent(renderer);
 }
 
@@ -77,7 +102,6 @@ void Game::loop(){
   dtime = (double)((now-last)/1000.0f);
 
   SDL_Delay(20);
-
   //std::cout << "dtime=" << dtime << std::endl;
 
   SDL_Event event;
